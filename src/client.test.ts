@@ -1,4 +1,4 @@
-import Client, { UrlUpgradeRequest, FileUpgradeRequest } from './client'; // 替换为实际文件路径
+import Client, { UrlUpgradeRequest, FileUpgradeRequest } from '@toolsetlink/upgradelink-api-typescript'; // 替换为实际文件路径
 
 // 测试获取URL升级信息
 async function testGetUrlUpgrade() {
