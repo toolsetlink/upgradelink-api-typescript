@@ -1,10 +1,14 @@
-import Client, { UrlUpgradeRequest, FileUpgradeRequest } from '@toolsetlink/upgradelink-api-typescript'; // 替换为实际文件路径
+import Client, {UrlUpgradeRequest, FileUpgradeRequest, Config} from './client'; // 替换为实际文件路径
 
 // 测试获取URL升级信息
 async function testGetUrlUpgrade() {
     try {
         // 初始化客户端
-        const client = new Client('mui2W50H1j-OC4xD6PgQag', 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc');
+        const config = new Config({
+            accessKey:  'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new Client(config);
 
         // 构造请求参数
         const request = new UrlUpgradeRequest({
@@ -38,7 +42,11 @@ async function testGetUrlUpgrade() {
 async function testGetFileUpgrade() {
     try {
         // 初始化客户端
-        const client = new Client('mui2W50H1j-OC4xD6PgQag', 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc');
+        const config = new Config({
+            accessKey:  'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new Client(config);
 
         // 构造请求参数
         const request = new FileUpgradeRequest({

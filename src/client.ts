@@ -3,6 +3,34 @@ import Util from '@alicloud/tea-util';
 import DarabonbaBase from '@toolsetlink/darabonba-base-typescript';
 import * as $tea from '@alicloud/tea-typescript';
 
+export class Config extends $tea.Model {
+  accessKey: string;
+  accessSecret: string;
+  protocol: string;
+  endpoint: string;
+  static names(): { [key: string]: string } {
+    return {
+      accessKey: 'accessKey',
+      accessSecret: 'accessSecret',
+      protocol: 'protocol',
+      endpoint: 'endpoint',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      accessKey: 'string',
+      accessSecret: 'string',
+      protocol: 'string',
+      endpoint: 'string',
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
 export class UrlUpgradeRequest extends $tea.Model {
   urlKey: string;
   versionCode: number;
@@ -191,14 +219,26 @@ export class FileUpgradeResponse extends $tea.Model {
 
 
 export default class Client {
+  _accessKey: string;
+  _accessSecret: string;
+  _protocol: string;
   _endpoint: string;
-  _accessKeyId: string;
-  _accessKeySecret: string;
 
-  constructor(accessKeyId: string, accessKeySecret: string) {
-    this._endpoint = "api.upgrade.toolsetlink.com";
-    this._accessKeyId = accessKeyId;
-    this._accessKeySecret = accessKeySecret;
+  constructor(config: Config) {
+    this._accessKey = config.accessKey;
+    this._accessSecret = config.accessSecret;
+    if (Util.equalString(config.protocol, "HTTPS")) {
+      this._protocol = "HTTPS";
+    } else {
+      this._protocol = "HTTP";
+    }
+
+    if (Util.empty(config.endpoint)) {
+      this._endpoint = "api.upgrade.toolsetlink.com";
+    } else {
+      this._endpoint = config.endpoint;
+    }
+
   }
 
   async getUrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse> {
@@ -227,20 +267,20 @@ export default class Client {
         let timestamp = DarabonbaBase.timeRFC3339();
         let nonce = DarabonbaBase.generateNonce();
         let uri = "/v1/url/upgrade";
-        let accessKeySecret = this._accessKeySecret;
-        let accessKeyId = this._accessKeyId;
+        let accessKey = this._accessKey;
+        let accessSecret = this._accessSecret;
         // 生成签名
-        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessKeySecret, timestamp, uri);
-        request_.protocol = "HTTP";
+        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+        request_.protocol = this._protocol;
         request_.method = "POST";
         request_.pathname = `/v1/url/upgrade`;
         request_.headers = {
           host: this._endpoint,
           'content-type': "application/json",
-          'x-timestamp': timestamp,
-          'x-nonce': nonce,
-          'x-accesskey': accessKeyId,
-          'x-signature': signature,
+          'x-Timestamp': timestamp,
+          'x-Nonce': nonce,
+          'x-AccessKey': accessKey,
+          'x-Signature': signature,
         };
         request_.body = new $tea.BytesReadable(bodyStr);
         _lastRequest = request_;
@@ -296,20 +336,20 @@ export default class Client {
         let timestamp = DarabonbaBase.timeRFC3339();
         let nonce = DarabonbaBase.generateNonce();
         let uri = "/v1/file/upgrade";
-        let accessKeySecret = this._accessKeySecret;
-        let accessKeyId = this._accessKeyId;
+        let accessKey = this._accessKey;
+        let accessSecret = this._accessSecret;
         // 生成签名
-        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessKeySecret, timestamp, uri);
-        request_.protocol = "HTTP";
+        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+        request_.protocol = this._protocol;
         request_.method = "POST";
         request_.pathname = `/v1/file/upgrade`;
         request_.headers = {
           host: this._endpoint,
           'content-type': "application/json",
-          'x-timestamp': timestamp,
-          'x-nonce': nonce,
-          'x-accesskey': accessKeyId,
-          'x-signature': signature,
+          'x-Timestamp': timestamp,
+          'x-Nonce': nonce,
+          'x-AccessKey': accessKey,
+          'x-Signature': signature,
         };
         request_.body = new $tea.BytesReadable(bodyStr);
         _lastRequest = request_;
