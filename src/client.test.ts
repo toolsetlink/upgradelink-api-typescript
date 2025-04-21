@@ -15,8 +15,8 @@ async function testGetUrlUpgrade() {
             urlKey: 'OpggWISrLVRFa5y04LzkwA',
             versionCode: 1,
             appointVersionCode: 0,
-            devModelKey: 'MODEL',
-            devKey: 'FINGERPRINT'
+            devModelKey: '',
+            devKey: ''
         });
 
         // 发起请求
@@ -53,8 +53,8 @@ async function testGetFileUpgrade() {
             fileKey: 'LOYlLXNy7wV3ySuh0XgtSg',
             versionCode: 1,
             appointVersionCode: 0,
-            devModelKey: 'MODEL',
-            devKey: 'FINGERPRINT'
+            devModelKey: '',
+            devKey: ''
         });
 
         // 发起请求

@@ -36,11 +36,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FileUpgradeResponse = exports.FileUpgradeDataResponse = exports.FileUpgradeRequest = exports.UrlUpgradeResponse = exports.UrlUpgradeDataResponse = exports.UrlUpgradeRequest = void 0;
+exports.FileUpgradeResponse = exports.FileUpgradeDataResponse = exports.FileUpgradeRequest = exports.UrlUpgradeResponse = exports.UrlUpgradeDataResponse = exports.UrlUpgradeRequest = exports.Config = void 0;
 // This file is auto-generated, don't edit it
 const tea_util_1 = __importDefault(require("@alicloud/tea-util"));
 const darabonba_base_typescript_1 = __importDefault(require("@toolsetlink/darabonba-base-typescript"));
 const $tea = __importStar(require("@alicloud/tea-typescript"));
+class Config extends $tea.Model {
+    static names() {
+        return {
+            accessKey: 'accessKey',
+            accessSecret: 'accessSecret',
+            protocol: 'protocol',
+            endpoint: 'endpoint',
+        };
+    }
+    static types() {
+        return {
+            accessKey: 'string',
+            accessSecret: 'string',
+            protocol: 'string',
+            endpoint: 'string',
+        };
+    }
+    constructor(map) {
+        super(map);
+    }
+}
+exports.Config = Config;
 class UrlUpgradeRequest extends $tea.Model {
     static names() {
         return {
@@ -186,10 +208,21 @@ class FileUpgradeResponse extends $tea.Model {
 }
 exports.FileUpgradeResponse = FileUpgradeResponse;
 class Client {
-    constructor(accessKeyId, accessKeySecret) {
-        this._endpoint = "api.upgrade.toolsetlink.com";
-        this._accessKeyId = accessKeyId;
-        this._accessKeySecret = accessKeySecret;
+    constructor(config) {
+        this._accessKey = config.accessKey;
+        this._accessSecret = config.accessSecret;
+        if (tea_util_1.default.equalString(config.protocol, "HTTPS")) {
+            this._protocol = "HTTPS";
+        }
+        else {
+            this._protocol = "HTTP";
+        }
+        if (tea_util_1.default.empty(config.endpoint)) {
+            this._endpoint = "api.upgrade.toolsetlink.com";
+        }
+        else {
+            this._endpoint = config.endpoint;
+        }
     }
     async getUrlUpgrade(request) {
         let _runtime = {
@@ -215,20 +248,20 @@ class Client {
                 let timestamp = darabonba_base_typescript_1.default.timeRFC3339();
                 let nonce = darabonba_base_typescript_1.default.generateNonce();
                 let uri = "/v1/url/upgrade";
-                let accessKeySecret = this._accessKeySecret;
-                let accessKeyId = this._accessKeyId;
+                let accessKey = this._accessKey;
+                let accessSecret = this._accessSecret;
                 // 生成签名
-                let signature = darabonba_base_typescript_1.default.generateSignature(bodyStr, nonce, accessKeySecret, timestamp, uri);
-                request_.protocol = "HTTP";
+                let signature = darabonba_base_typescript_1.default.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+                request_.protocol = this._protocol;
                 request_.method = "POST";
                 request_.pathname = `/v1/url/upgrade`;
                 request_.headers = {
                     host: this._endpoint,
                     'content-type': "application/json",
-                    'x-timestamp': timestamp,
-                    'x-nonce': nonce,
-                    'x-accesskey': accessKeyId,
-                    'x-signature': signature,
+                    'x-Timestamp': timestamp,
+                    'x-Nonce': nonce,
+                    'x-AccessKey': accessKey,
+                    'x-Signature': signature,
                 };
                 request_.body = new $tea.BytesReadable(bodyStr);
                 _lastRequest = request_;
@@ -277,20 +310,20 @@ class Client {
                 let timestamp = darabonba_base_typescript_1.default.timeRFC3339();
                 let nonce = darabonba_base_typescript_1.default.generateNonce();
                 let uri = "/v1/file/upgrade";
-                let accessKeySecret = this._accessKeySecret;
-                let accessKeyId = this._accessKeyId;
+                let accessKey = this._accessKey;
+                let accessSecret = this._accessSecret;
                 // 生成签名
-                let signature = darabonba_base_typescript_1.default.generateSignature(bodyStr, nonce, accessKeySecret, timestamp, uri);
-                request_.protocol = "HTTP";
+                let signature = darabonba_base_typescript_1.default.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+                request_.protocol = this._protocol;
                 request_.method = "POST";
                 request_.pathname = `/v1/file/upgrade`;
                 request_.headers = {
                     host: this._endpoint,
                     'content-type': "application/json",
-                    'x-timestamp': timestamp,
-                    'x-nonce': nonce,
-                    'x-accesskey': accessKeyId,
-                    'x-signature': signature,
+                    'x-Timestamp': timestamp,
+                    'x-Nonce': nonce,
+                    'x-AccessKey': accessKey,
+                    'x-Signature': signature,
                 };
                 request_.body = new $tea.BytesReadable(bodyStr);
                 _lastRequest = request_;

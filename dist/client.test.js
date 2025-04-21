@@ -38,7 +38,11 @@ const client_1 = __importStar(require("./client")); // 替换为实际文件路�
 async function testGetUrlUpgrade() {
     try {
         // 初始化客户端
-        const client = new client_1.default('mui2W50H1j-OC4xD6PgQag', 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc');
+        const config = new client_1.Config({
+            accessKey: 'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new client_1.default(config);
         // 构造请求参数
         const request = new client_1.UrlUpgradeRequest({
             urlKey: 'OpggWISrLVRFa5y04LzkwA',
@@ -69,7 +73,11 @@ async function testGetUrlUpgrade() {
 async function testGetFileUpgrade() {
     try {
         // 初始化客户端
-        const client = new client_1.default('mui2W50H1j-OC4xD6PgQag', 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc');
+        const config = new client_1.Config({
+            accessKey: 'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new client_1.default(config);
         // 构造请求参数
         const request = new client_1.FileUpgradeRequest({
             fileKey: 'LOYlLXNy7wV3ySuh0XgtSg',

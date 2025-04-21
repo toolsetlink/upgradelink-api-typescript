@@ -1,4 +1,19 @@
 import * as $tea from '@alicloud/tea-typescript';
+export declare class Config extends $tea.Model {
+    accessKey: string;
+    accessSecret: string;
+    protocol: string;
+    endpoint: string;
+    static names(): {
+        [key: string]: string;
+    };
+    static types(): {
+        [key: string]: any;
+    };
+    constructor(map?: {
+        [key: string]: any;
+    });
+}
 export declare class UrlUpgradeRequest extends $tea.Model {
     urlKey: string;
     versionCode: number;
@@ -96,10 +111,11 @@ export declare class FileUpgradeResponse extends $tea.Model {
     });
 }
 export default class Client {
+    _accessKey: string;
+    _accessSecret: string;
+    _protocol: string;
     _endpoint: string;
-    _accessKeyId: string;
-    _accessKeySecret: string;
-    constructor(accessKeyId: string, accessKeySecret: string);
+    constructor(config: Config);
     getUrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse>;
     getFileUpgrade(request: FileUpgradeRequest): Promise<FileUpgradeResponse>;
 }
