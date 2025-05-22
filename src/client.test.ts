@@ -1,4 +1,6 @@
-import Client, {UrlUpgradeRequest, FileUpgradeRequest, Config} from './client'; // 替换为实际文件路径
+import Client, {UrlUpgradeRequest, FileUpgradeRequest, Config, AppReportRequest} from './client';
+import {Enums} from "./enums";
+import Tools from "./tools"; // 替换为实际文件路径
 
 // 测试获取URL升级信息
 async function testGetUrlUpgrade() {
@@ -20,7 +22,7 @@ async function testGetUrlUpgrade() {
         });
 
         // 发起请求
-        const response = await client.getUrlUpgrade(request);
+        const response = await client.UrlUpgrade(request);
 
         // 打印响应结果
         console.log('\nURL升级信息响应:');
@@ -58,7 +60,7 @@ async function testGetFileUpgrade() {
         });
 
         // 发起请求
-        const response = await client.getFileUpgrade(request);
+        const response = await client.FileUpgrade(request);
 
         // 打印响应结果
         console.log('\n文件升级信息响应:');
@@ -76,6 +78,73 @@ async function testGetFileUpgrade() {
     }
 }
 
+
+// 测试事件上报信息
+async function testPostAppReport() {
+    try {
+        // 初始化客户端
+        const config = new Config({
+            accessKey:  'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new Client(config);
+
+        // 构造请求参数
+
+        /* app_start 应用-启动事件 */
+        // const request = new AppReportRequest({
+        //     eventType: Enums.EVENT_TYPE_APP_START,
+        //     appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
+        //     devModelKey: '',
+        //     devKey: '',
+        //     versionCode: 1,
+        //     timestamp: Tools.timeRFC3339(),
+        //     eventData: {
+        //         launchTime: Tools.timeRFC3339(),
+        //     }
+        // });
+
+        /* app_upgrade_download 应用升级-下载事件 */
+        // const request = new AppReportRequest({
+        //     eventType: Enums.EVENT_TYPE_APP_UPGRADE_DOWNLOAD,
+        //     appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
+        //     devModelKey: '',
+        //     devKey: '',
+        //     versionCode: 1,
+        //     timestamp: Tools.timeRFC3339(),
+        //     eventData: {
+        //         code: Enums.EVENT_TYPE_CODE_SUCCESS,
+        //         downloadVersionCode: 10,
+        //     }
+        // });
+
+        /* app_upgrade_install 应用升级-升级事件 */
+        const request = new AppReportRequest({
+            eventType: Enums.EVENT_TYPE_APP_UPGRADE_UPGRADE,
+            appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
+            devModelKey: '',
+            devKey: '',
+            versionCode: 1,
+            timestamp: Tools.timeRFC3339(),
+            eventData: {
+                code: Enums.EVENT_TYPE_CODE_SUCCESS,
+                upgradeVersionCode: 10,
+            }
+        });
+
+        // 发起请求
+        const response = await client.AppReport(request);
+
+        // 打印响应结果
+        console.log('\n事件上报信息响应:');
+        console.log(`code: ${response.code}`);
+        console.log(`msg: ${response.msg}`);
+    } catch (error) {
+        console.error('\n事件上报信息失败:', error);
+    }
+}
+
 // 执行测试
 testGetUrlUpgrade();
 testGetFileUpgrade();
+testPostAppReport();

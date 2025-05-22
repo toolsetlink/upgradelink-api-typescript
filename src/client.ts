@@ -217,6 +217,99 @@ export class FileUpgradeResponse extends $tea.Model {
   }
 }
 
+export class AppReportRequest extends $tea.Model {
+  eventType: string;
+  devModelKey?: string;
+  devKey?: string;
+  appKey: string;
+  versionCode: number;
+  timestamp?: string;
+  eventData: AppReportRequestEventData;
+  static names(): { [key: string]: string } {
+    return {
+      eventType: 'eventType',
+      devModelKey: 'devModelKey',
+      devKey: 'devKey',
+      appKey: 'appKey',
+      versionCode: 'versionCode',
+      timestamp: 'timestamp',
+      eventData: 'eventData',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      eventType: 'string',
+      devModelKey: 'string',
+      devKey: 'string',
+      appKey: 'string',
+      versionCode: 'number',
+      timestamp: 'string',
+      eventData: AppReportRequestEventData,
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
+export class AppReportResponse extends $tea.Model {
+  code: number;
+  msg: string;
+  docs: string;
+  traceId: string;
+  static names(): { [key: string]: string } {
+    return {
+      code: 'code',
+      msg: 'msg',
+      docs: 'docs',
+      traceId: 'traceId',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      code: 'number',
+      msg: 'string',
+      docs: 'string',
+      traceId: 'string',
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
+export class AppReportRequestEventData extends $tea.Model {
+  launchTime?: string;
+  code?: number;
+  downloadVersionCode?: number;
+  upgradeVersionCode?: number;
+  static names(): { [key: string]: string } {
+    return {
+      launchTime: 'launchTime',
+      code: 'code',
+      downloadVersionCode: 'downloadVersionCode',
+      upgradeVersionCode: 'upgradeVersionCode',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      launchTime: 'string',
+      code: 'number',
+      downloadVersionCode: 'number',
+      upgradeVersionCode: 'number',
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
 
 export default class Client {
   _accessKey: string;
@@ -241,7 +334,7 @@ export default class Client {
 
   }
 
-  async getUrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse> {
+  async UrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse> {
     let _runtime: { [key: string]: any } = {
       timeout: 10000,
       // 10s 的过期时间
@@ -292,7 +385,8 @@ export default class Client {
             statusCode: `${response_.statusCode}`,
             code: `${result["code"]}`,
             message: `${result["msg"]}`,
-            trace_id: `${result["trace_id"]}`,
+            docs: `${result["docs"]}`,
+            traceId: `${result["traceId"]}`,
           });
         }
 
@@ -310,7 +404,7 @@ export default class Client {
     throw $tea.newUnretryableError(_lastRequest);
   }
 
-  async getFileUpgrade(request: FileUpgradeRequest): Promise<FileUpgradeResponse> {
+  async FileUpgrade(request: FileUpgradeRequest): Promise<FileUpgradeResponse> {
     let _runtime: { [key: string]: any } = {
       timeout: 10000,
       // 10s 的过期时间
@@ -361,13 +455,84 @@ export default class Client {
             statusCode: `${response_.statusCode}`,
             code: `${result["code"]}`,
             message: `${result["msg"]}`,
-            trace_id: `${result["trace_id"]}`,
+            docs: `${result["docs"]}`,
+            traceId: `${result["traceId"]}`,
           });
         }
 
         return $tea.cast<FileUpgradeResponse>({
           ...result,
         }, new FileUpgradeResponse({}));
+      } catch (ex) {
+        if ($tea.isRetryable(ex)) {
+          continue;
+        }
+        throw ex;
+      }
+    }
+
+    throw $tea.newUnretryableError(_lastRequest);
+  }
+
+  async AppReport(request: AppReportRequest): Promise<AppReportResponse> {
+    let _runtime: { [key: string]: any } = {
+      timeout: 10000,
+      // 10s 的过期时间
+    }
+
+    let _lastRequest = null;
+    let _now = Date.now();
+    let _retryTimes = 0;
+    while ($tea.allowRetry(_runtime['retry'], _retryTimes, _now)) {
+      if (_retryTimes > 0) {
+        let _backoffTime = $tea.getBackoffTime(_runtime['backoff'], _retryTimes);
+        if (_backoffTime > 0) {
+          await $tea.sleep(_backoffTime);
+        }
+      }
+
+      _retryTimes = _retryTimes + 1;
+      try {
+        let request_ = new $tea.Request();
+        // 序列化请求体
+        let bodyStr = Util.toJSONString(request);
+        // 生成请求参数
+        let timestamp = DarabonbaBase.timeRFC3339();
+        let nonce = DarabonbaBase.generateNonce();
+        let uri = "/v1/app/report";
+        let accessKey = this._accessKey;
+        let accessSecret = this._accessSecret;
+        // 生成签名
+        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+        request_.protocol = this._protocol;
+        request_.method = "POST";
+        request_.pathname = `/v1/app/report`;
+        request_.headers = {
+          host: this._endpoint,
+          'content-type': "application/json",
+          'x-Timestamp': timestamp,
+          'x-Nonce': nonce,
+          'x-AccessKey': accessKey,
+          'x-Signature': signature,
+        };
+        request_.body = new $tea.BytesReadable(bodyStr);
+        _lastRequest = request_;
+        let response_ = await $tea.doAction(request_, _runtime);
+
+        let result = Util.assertAsMap(await Util.readAsJSON(response_.body));
+        if (!Util.equalNumber(response_.statusCode, 200)) {
+          throw $tea.newError({
+            statusCode: `${response_.statusCode}`,
+            code: `${result["code"]}`,
+            message: `${result["msg"]}`,
+            docs: `${result["docs"]}`,
+            traceId: `${result["traceId"]}`,
+          });
+        }
+
+        return $tea.cast<AppReportResponse>({
+          ...result,
+        }, new AppReportResponse({}));
       } catch (ex) {
         if ($tea.isRetryable(ex)) {
           continue;
