@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FileUpgradeResponse = exports.FileUpgradeDataResponse = exports.FileUpgradeRequest = exports.UrlUpgradeResponse = exports.UrlUpgradeDataResponse = exports.UrlUpgradeRequest = exports.Config = void 0;
+exports.AppReportRequestEventData = exports.AppReportResponse = exports.AppReportRequest = exports.FileUpgradeResponse = exports.FileUpgradeDataResponse = exports.FileUpgradeRequest = exports.UrlUpgradeResponse = exports.UrlUpgradeDataResponse = exports.UrlUpgradeRequest = exports.Config = void 0;
 // This file is auto-generated, don't edit it
 const tea_util_1 = __importDefault(require("@alicloud/tea-util"));
 const darabonba_base_typescript_1 = __importDefault(require("@toolsetlink/darabonba-base-typescript"));
@@ -207,6 +207,78 @@ class FileUpgradeResponse extends $tea.Model {
     }
 }
 exports.FileUpgradeResponse = FileUpgradeResponse;
+class AppReportRequest extends $tea.Model {
+    static names() {
+        return {
+            eventType: 'eventType',
+            devModelKey: 'devModelKey',
+            devKey: 'devKey',
+            appKey: 'appKey',
+            versionCode: 'versionCode',
+            timestamp: 'timestamp',
+            eventData: 'eventData',
+        };
+    }
+    static types() {
+        return {
+            eventType: 'string',
+            devModelKey: 'string',
+            devKey: 'string',
+            appKey: 'string',
+            versionCode: 'number',
+            timestamp: 'string',
+            eventData: AppReportRequestEventData,
+        };
+    }
+    constructor(map) {
+        super(map);
+    }
+}
+exports.AppReportRequest = AppReportRequest;
+class AppReportResponse extends $tea.Model {
+    static names() {
+        return {
+            code: 'code',
+            msg: 'msg',
+            docs: 'docs',
+            traceId: 'traceId',
+        };
+    }
+    static types() {
+        return {
+            code: 'number',
+            msg: 'string',
+            docs: 'string',
+            traceId: 'string',
+        };
+    }
+    constructor(map) {
+        super(map);
+    }
+}
+exports.AppReportResponse = AppReportResponse;
+class AppReportRequestEventData extends $tea.Model {
+    static names() {
+        return {
+            launchTime: 'launchTime',
+            code: 'code',
+            downloadVersionCode: 'downloadVersionCode',
+            upgradeVersionCode: 'upgradeVersionCode',
+        };
+    }
+    static types() {
+        return {
+            launchTime: 'string',
+            code: 'number',
+            downloadVersionCode: 'number',
+            upgradeVersionCode: 'number',
+        };
+    }
+    constructor(map) {
+        super(map);
+    }
+}
+exports.AppReportRequestEventData = AppReportRequestEventData;
 class Client {
     constructor(config) {
         this._accessKey = config.accessKey;
@@ -224,7 +296,7 @@ class Client {
             this._endpoint = config.endpoint;
         }
     }
-    async getUrlUpgrade(request) {
+    async UrlUpgrade(request) {
         let _runtime = {
             timeout: 10000,
             // 10s 的过期时间
@@ -272,7 +344,8 @@ class Client {
                         statusCode: `${response_.statusCode}`,
                         code: `${result["code"]}`,
                         message: `${result["msg"]}`,
-                        trace_id: `${result["trace_id"]}`,
+                        docs: `${result["docs"]}`,
+                        traceId: `${result["traceId"]}`,
                     });
                 }
                 return $tea.cast(Object.assign({}, result), new UrlUpgradeResponse({}));
@@ -286,7 +359,7 @@ class Client {
         }
         throw $tea.newUnretryableError(_lastRequest);
     }
-    async getFileUpgrade(request) {
+    async FileUpgrade(request) {
         let _runtime = {
             timeout: 10000,
             // 10s 的过期时间
@@ -334,10 +407,74 @@ class Client {
                         statusCode: `${response_.statusCode}`,
                         code: `${result["code"]}`,
                         message: `${result["msg"]}`,
-                        trace_id: `${result["trace_id"]}`,
+                        docs: `${result["docs"]}`,
+                        traceId: `${result["traceId"]}`,
                     });
                 }
                 return $tea.cast(Object.assign({}, result), new FileUpgradeResponse({}));
+            }
+            catch (ex) {
+                if ($tea.isRetryable(ex)) {
+                    continue;
+                }
+                throw ex;
+            }
+        }
+        throw $tea.newUnretryableError(_lastRequest);
+    }
+    async AppReport(request) {
+        let _runtime = {
+            timeout: 10000,
+            // 10s 的过期时间
+        };
+        let _lastRequest = null;
+        let _now = Date.now();
+        let _retryTimes = 0;
+        while ($tea.allowRetry(_runtime['retry'], _retryTimes, _now)) {
+            if (_retryTimes > 0) {
+                let _backoffTime = $tea.getBackoffTime(_runtime['backoff'], _retryTimes);
+                if (_backoffTime > 0) {
+                    await $tea.sleep(_backoffTime);
+                }
+            }
+            _retryTimes = _retryTimes + 1;
+            try {
+                let request_ = new $tea.Request();
+                // 序列化请求体
+                let bodyStr = tea_util_1.default.toJSONString(request);
+                // 生成请求参数
+                let timestamp = darabonba_base_typescript_1.default.timeRFC3339();
+                let nonce = darabonba_base_typescript_1.default.generateNonce();
+                let uri = "/v1/app/report";
+                let accessKey = this._accessKey;
+                let accessSecret = this._accessSecret;
+                // 生成签名
+                let signature = darabonba_base_typescript_1.default.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+                request_.protocol = this._protocol;
+                request_.method = "POST";
+                request_.pathname = `/v1/app/report`;
+                request_.headers = {
+                    host: this._endpoint,
+                    'content-type': "application/json",
+                    'x-Timestamp': timestamp,
+                    'x-Nonce': nonce,
+                    'x-AccessKey': accessKey,
+                    'x-Signature': signature,
+                };
+                request_.body = new $tea.BytesReadable(bodyStr);
+                _lastRequest = request_;
+                let response_ = await $tea.doAction(request_, _runtime);
+                let result = tea_util_1.default.assertAsMap(await tea_util_1.default.readAsJSON(response_.body));
+                if (!tea_util_1.default.equalNumber(response_.statusCode, 200)) {
+                    throw $tea.newError({
+                        statusCode: `${response_.statusCode}`,
+                        code: `${result["code"]}`,
+                        message: `${result["msg"]}`,
+                        docs: `${result["docs"]}`,
+                        traceId: `${result["traceId"]}`,
+                    });
+                }
+                return $tea.cast(Object.assign({}, result), new AppReportResponse({}));
             }
             catch (ex) {
                 if ($tea.isRetryable(ex)) {

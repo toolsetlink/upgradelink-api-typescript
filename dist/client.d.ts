@@ -110,12 +110,61 @@ export declare class FileUpgradeResponse extends $tea.Model {
         [key: string]: any;
     });
 }
+export declare class AppReportRequest extends $tea.Model {
+    eventType: string;
+    devModelKey?: string;
+    devKey?: string;
+    appKey: string;
+    versionCode: number;
+    timestamp?: string;
+    eventData: AppReportRequestEventData;
+    static names(): {
+        [key: string]: string;
+    };
+    static types(): {
+        [key: string]: any;
+    };
+    constructor(map?: {
+        [key: string]: any;
+    });
+}
+export declare class AppReportResponse extends $tea.Model {
+    code: number;
+    msg: string;
+    docs: string;
+    traceId: string;
+    static names(): {
+        [key: string]: string;
+    };
+    static types(): {
+        [key: string]: any;
+    };
+    constructor(map?: {
+        [key: string]: any;
+    });
+}
+export declare class AppReportRequestEventData extends $tea.Model {
+    launchTime?: string;
+    code?: number;
+    downloadVersionCode?: number;
+    upgradeVersionCode?: number;
+    static names(): {
+        [key: string]: string;
+    };
+    static types(): {
+        [key: string]: any;
+    };
+    constructor(map?: {
+        [key: string]: any;
+    });
+}
 export default class Client {
     _accessKey: string;
     _accessSecret: string;
     _protocol: string;
     _endpoint: string;
     constructor(config: Config);
-    getUrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse>;
-    getFileUpgrade(request: FileUpgradeRequest): Promise<FileUpgradeResponse>;
+    UrlUpgrade(request: UrlUpgradeRequest): Promise<UrlUpgradeResponse>;
+    FileUpgrade(request: FileUpgradeRequest): Promise<FileUpgradeResponse>;
+    AppReport(request: AppReportRequest): Promise<AppReportResponse>;
 }
