@@ -124,6 +124,99 @@ export class UrlUpgradeResponse extends $tea.Model {
   }
 }
 
+export class ConfigurationUpgradeRequest extends $tea.Model {
+  configurationKey: string;
+  versionCode: number;
+  appointVersionCode: number;
+  devModelKey: string;
+  devKey: string;
+  static names(): { [key: string]: string } {
+    return {
+      configurationKey: 'configurationKey',
+      versionCode: 'versionCode',
+      appointVersionCode: 'appointVersionCode',
+      devModelKey: 'devModelKey',
+      devKey: 'devKey',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      configurationKey: 'string',
+      versionCode: 'number',
+      appointVersionCode: 'number',
+      devModelKey: 'string',
+      devKey: 'string',
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
+export class ConfigurationUpgradeDataResponse extends $tea.Model {
+  configurationKey: string;
+  versionName: string;
+  versionCode: number;
+  upgradeType: number;
+  promptUpgradeContent: string;
+  content: any;
+  static names(): { [key: string]: string } {
+    return {
+      configurationKey: 'configurationKey',
+      versionName: 'versionName',
+      versionCode: 'versionCode',
+      upgradeType: 'upgradeType',
+      promptUpgradeContent: 'promptUpgradeContent',
+      content: 'content',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      configurationKey: 'string',
+      versionName: 'string',
+      versionCode: 'number',
+      upgradeType: 'number',
+      promptUpgradeContent: 'string',
+      content: 'any',
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
+export class ConfigurationUpgradeResponse extends $tea.Model {
+  code: number;
+  msg: string;
+  traceId: string;
+  data: ConfigurationUpgradeDataResponse;
+  static names(): { [key: string]: string } {
+    return {
+      code: 'code',
+      msg: 'msg',
+      traceId: 'traceId',
+      data: 'data',
+    };
+  }
+
+  static types(): { [key: string]: any } {
+    return {
+      code: 'number',
+      msg: 'string',
+      traceId: 'string',
+      data: ConfigurationUpgradeDataResponse,
+    };
+  }
+
+  constructor(map?: { [key: string]: any }) {
+    super(map);
+  }
+}
+
 export class FileUpgradeRequest extends $tea.Model {
   fileKey: string;
   versionCode: number;
@@ -393,6 +486,76 @@ export default class Client {
         return $tea.cast<UrlUpgradeResponse>({
           ...result,
         }, new UrlUpgradeResponse({}));
+      } catch (ex) {
+        if ($tea.isRetryable(ex)) {
+          continue;
+        }
+        throw ex;
+      }
+    }
+
+    throw $tea.newUnretryableError(_lastRequest);
+  }
+
+  async ConfigurationUpgrade(request: ConfigurationUpgradeRequest): Promise<ConfigurationUpgradeResponse> {
+    let _runtime: { [key: string]: any } = {
+      timeout: 10000,
+      // 10s 的过期时间
+    }
+
+    let _lastRequest = null;
+    let _now = Date.now();
+    let _retryTimes = 0;
+    while ($tea.allowRetry(_runtime['retry'], _retryTimes, _now)) {
+      if (_retryTimes > 0) {
+        let _backoffTime = $tea.getBackoffTime(_runtime['backoff'], _retryTimes);
+        if (_backoffTime > 0) {
+          await $tea.sleep(_backoffTime);
+        }
+      }
+
+      _retryTimes = _retryTimes + 1;
+      try {
+        let request_ = new $tea.Request();
+        // 序列化请求体
+        let bodyStr = Util.toJSONString(request);
+        // 生成请求参数
+        let timestamp = DarabonbaBase.timeRFC3339();
+        let nonce = DarabonbaBase.generateNonce();
+        let uri = "/v1/configuration/upgrade";
+        let accessKey = this._accessKey;
+        let accessSecret = this._accessSecret;
+        // 生成签名
+        let signature = DarabonbaBase.generateSignature(bodyStr, nonce, accessSecret, timestamp, uri);
+        request_.protocol = this._protocol;
+        request_.method = "POST";
+        request_.pathname = `/v1/configuration/upgrade`;
+        request_.headers = {
+          host: this._endpoint,
+          'content-type': "application/json",
+          'x-Timestamp': timestamp,
+          'x-Nonce': nonce,
+          'x-AccessKey': accessKey,
+          'x-Signature': signature,
+        };
+        request_.body = new $tea.BytesReadable(bodyStr);
+        _lastRequest = request_;
+        let response_ = await $tea.doAction(request_, _runtime);
+
+        let result = Util.assertAsMap(await Util.readAsJSON(response_.body));
+        if (!Util.equalNumber(response_.statusCode, 200)) {
+          throw $tea.newError({
+            statusCode: `${response_.statusCode}`,
+            code: `${result["code"]}`,
+            message: `${result["msg"]}`,
+            docs: `${result["docs"]}`,
+            traceId: `${result["traceId"]}`,
+          });
+        }
+
+        return $tea.cast<ConfigurationUpgradeResponse>({
+          ...result,
+        }, new ConfigurationUpgradeResponse({}));
       } catch (ex) {
         if ($tea.isRetryable(ex)) {
           continue;
