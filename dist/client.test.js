@@ -74,6 +74,75 @@ async function testGetUrlUpgrade() {
         console.error('\n获取URL升级信息失败:', error);
     }
 }
+// 测试获取URL应用版本信息
+async function testGetUrlVersion() {
+    try {
+        // 初始化客户端
+        const config = new client_1.Config({
+            accessKey: 'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new client_1.default(config);
+        // 构造请求参数
+        const request = new client_1.UrlVersionRequest({
+            urlKey: 'OpggWISrLVRFa5y04LzkwA',
+            versionCode: 110,
+            appointVersionCode: 0,
+            devModelKey: '',
+            devKey: ''
+        });
+        // 发起请求
+        const response = await client.UrlVersion(request);
+        // 打印响应结果
+        console.log('\nURL应用版本信息响应:');
+        console.log(`code: ${response.code}`);
+        console.log(`msg: ${response.msg}`);
+        console.log('data:');
+        console.log(`  urlKey: ${response.data.urlKey}`);
+        console.log(`  versionName: ${response.data.versionName}`);
+        console.log(`  versionCode: ${response.data.versionCode}`);
+        console.log(`  description: ${response.data.description}`);
+    }
+    catch (error) {
+        console.error('\n获取URL应用版本信息失败:', error);
+    }
+}
+// 测试获取配置升级信息
+async function testGetConfigurationUpgrade() {
+    try {
+        // 初始化客户端
+        const config = new client_1.Config({
+            accessKey: 'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new client_1.default(config);
+        // 构造请求参数
+        const request = new client_1.ConfigurationUpgradeRequest({
+            configurationKey: 'q1hfB1VUQaK9VksTZGPU1Q',
+            versionCode: 1,
+            appointVersionCode: 0,
+            devModelKey: '',
+            devKey: ''
+        });
+        // 发起请求
+        const response = await client.ConfigurationUpgrade(request);
+        // 打印响应结果
+        console.log('\nURL升级信息响应:');
+        console.log(`code: ${response.code}`);
+        console.log(`msg: ${response.msg}`);
+        console.log('data:');
+        console.log(`  configurationKey: ${response.data.configurationKey}`);
+        console.log(`  versionName: ${response.data.versionName}`);
+        console.log(`  versionCode: ${response.data.versionCode}`);
+        console.log(`  upgradeType: ${response.data.upgradeType}`);
+        console.log(`  promptUpgradeContent: ${response.data.promptUpgradeContent}`);
+        console.log(`  content: ${response.data.content}`);
+        console.log(`  content.appName: ${response.data.content["appName"]}`);
+    }
+    catch (error) {
+        console.error('\n获取配置升级信息失败:', error);
+    }
+}
 // 测试获取文件升级信息
 async function testGetFileUpgrade() {
     try {
@@ -107,6 +176,38 @@ async function testGetFileUpgrade() {
     }
     catch (error) {
         console.error('\n获取文件升级信息失败:', error);
+    }
+}
+// 测试获取tauri应用版本信息
+async function testGetTauriVersion() {
+    try {
+        // 初始化客户端
+        const config = new client_1.Config({
+            accessKey: 'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new client_1.default(config);
+        // 构造请求参数
+        const request = new client_1.TauriVersionRequest({
+            tauriKey: 'a0jtz0HUwL66r7gCGvbMKQ',
+            versionName: "0.1.30",
+            target: "linux",
+            arch: "x86_64",
+        });
+        // 发起请求
+        const response = await client.TauriVersion(request);
+        // 打印响应结果
+        console.log('\nTauri应用版本信息响应:');
+        console.log(`code: ${response.code}`);
+        console.log(`msg: ${response.msg}`);
+        console.log('data:');
+        console.log(`  tauriKey: ${response.data.tauriKey}`);
+        console.log(`  versionName: ${response.data.versionName}`);
+        console.log(`  versionCode: ${response.data.versionCode}`);
+        console.log(`  description: ${response.data.description}`);
+    }
+    catch (error) {
+        console.error('\n获取Tauri应用版本信息失败:', error);
     }
 }
 // 测试事件上报信息
@@ -170,6 +271,9 @@ async function testPostAppReport() {
 }
 // 执行测试
 testGetUrlUpgrade();
+testGetUrlVersion();
+testGetTauriVersion();
+testGetConfigurationUpgrade();
 testGetFileUpgrade();
 testPostAppReport();
 //# sourceMappingURL=client.test.js.map
