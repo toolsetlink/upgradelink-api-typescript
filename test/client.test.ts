@@ -1,14 +1,12 @@
-import Client, {
-    UrlUpgradeRequest,
-    UrlVersionRequest,
+const { default: Client, Config, UrlUpgradeRequest,  AppReportRequest,
+    ConfigurationUpgradeRequest,
     FileUpgradeRequest,
     TauriVersionRequest,
-    Config,
-    AppReportRequest,
-    ConfigurationUpgradeRequest,
-} from './client';
-import {Enums} from "./enums";
-import Tools from "./tools"; // 替换为实际文件路径
+    UrlVersionRequest,
+} = require('@toolsetlink/upgradelink-api-typescript');
+
+const {Enums} = require('@toolsetlink/upgradelink-api-typescript/src/enums');
+const {Tools} = require('@toolsetlink/upgradelink-api-typescript/src/tools');
 
 // 测试获取URL升级信息
 async function testGetUrlUpgrade() {
@@ -18,6 +16,7 @@ async function testGetUrlUpgrade() {
             accessKey:  'mui2W50H1j-OC4xD6PgQag',
             accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
         });
+
         const client = new Client(config);
 
         // 构造请求参数
