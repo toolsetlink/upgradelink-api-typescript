@@ -2350,6 +2350,9 @@ class Client {
         }
         throw $tea.newUnretryableError(_lastRequest);
     }
+    static timeRFC3339() {
+        return darabonba_base_typescript_1.default.timeRFC3339();
+    }
 }
 exports.default = Client;
 //# sourceMappingURL=client.js.map

@@ -5,9 +5,6 @@ const { default: Client, Config, UrlUpgradeRequest,  AppReportRequest,
     UrlVersionRequest,
 } = require('@toolsetlink/upgradelink-api-typescript');
 
-const {Enums} = require('@toolsetlink/upgradelink-api-typescript/src/enums');
-const {Tools} = require('@toolsetlink/upgradelink-api-typescript/src/tools');
-
 // 测试获取URL升级信息
 async function testGetUrlUpgrade() {
     try {
@@ -214,21 +211,21 @@ async function testPostAppReport() {
         // 构造请求参数
 
         /* app_start 应用-启动事件 */
-        // const request = new AppReportRequest({
-        //     eventType: Enums.EVENT_TYPE_APP_START,
-        //     appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
-        //     devModelKey: '',
-        //     devKey: '',
-        //     versionCode: 1,
-        //     timestamp: Tools.timeRFC3339(),
-        //     eventData: {
-        //         launchTime: Tools.timeRFC3339(),
-        //     }
-        // });
+        const request = new AppReportRequest({
+            eventType: 'app_start',
+            appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
+            devModelKey: '',
+            devKey: '',
+            versionCode: 1,
+            timestamp: Client.timeRFC3339(),
+            eventData: {
+                launchTime: Client.timeRFC3339(),
+            }
+        });
 
-        /* app_upgrade_download 应用升级-下载事件 */
+        // /* app_upgrade_download 应用升级-下载事件 */
         // const request = new AppReportRequest({
-        //     eventType: Enums.EVENT_TYPE_APP_UPGRADE_DOWNLOAD,
+        //     eventType: 'app_upgrade_download',
         //     appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
         //     devModelKey: '',
         //     devKey: '',
@@ -240,19 +237,19 @@ async function testPostAppReport() {
         //     }
         // });
 
-        /* app_upgrade_install 应用升级-升级事件 */
-        const request = new AppReportRequest({
-            eventType: Enums.EVENT_TYPE_APP_UPGRADE_UPGRADE,
-            appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
-            devModelKey: '',
-            devKey: '',
-            versionCode: 1,
-            timestamp: Tools.timeRFC3339(),
-            eventData: {
-                code: Enums.EVENT_TYPE_CODE_SUCCESS,
-                upgradeVersionCode: 10,
-            }
-        });
+        // /* app_upgrade_install 应用升级-升级事件 */
+        // const request = new AppReportRequest({
+        //     eventType: 'app_upgrade_upgrade',
+        //     appKey: 'LOYlLXNy7wV3ySuh0XgtSg',
+        //     devModelKey: '',
+        //     devKey: '',
+        //     versionCode: 1,
+        //     timestamp: Tools.timeRFC3339(),
+        //     eventData: {
+        //         code: Enums.EVENT_TYPE_CODE_SUCCESS,
+        //         upgradeVersionCode: 10,
+        //     }
+        // });
 
         // 发起请求
         const response = await client.AppReport(request);

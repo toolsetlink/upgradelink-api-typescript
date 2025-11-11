@@ -840,4 +840,5 @@ export default class Client {
     MacUpgrade(request: MacUpgradeRequest): Promise<MacUpgradeResponse>;
     MacVersion(request: MacVersionRequest): Promise<MacVersionResponse>;
     AppReport(request: AppReportRequest): Promise<AppReportResponse>;
+    static timeRFC3339(): string;
 }

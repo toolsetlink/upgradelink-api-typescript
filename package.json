@@ -1,6 +1,6 @@
 {
   "name": "@toolsetlink/upgradelink-api-typescript",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "upgradelink-api-typescript",
   "private": false,
   "main": "dist/client.js",

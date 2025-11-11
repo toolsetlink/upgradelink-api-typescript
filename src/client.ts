@@ -2787,5 +2787,8 @@ export default class Client {
     throw $tea.newUnretryableError(_lastRequest);
   }
 
+  static timeRFC3339(): string {
+    return DarabonbaBase.timeRFC3339();
+  }
 
 }
