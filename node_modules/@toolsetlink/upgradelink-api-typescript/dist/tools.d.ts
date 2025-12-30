@@ -1,3 +1,0 @@
-export declare class Tools {
-    static timeRFC3339(): string;
-}

@@ -3,6 +3,7 @@ const { default: Client, Config, UrlUpgradeRequest,  AppReportRequest,
     FileUpgradeRequest,
     TauriVersionRequest,
     UrlVersionRequest,
+    AppStatisticsInfoRequest,
 } = require('@toolsetlink/upgradelink-api-typescript');
 
 // 测试获取URL升级信息
@@ -263,6 +264,49 @@ async function testPostAppReport() {
     }
 }
 
+
+
+// 测试获取应用统计信息
+async function testGetAppStatisticsInfo() {
+    try {
+        // 初始化客户端
+        const config = new Config({
+            accessKey:  'mui2W50H1j-OC4xD6PgQag',
+            accessSecret: 'PEbdHFGC0uO_Pch7XWBQTMsFRxKPQAM2565eP8LJ3gc',
+        });
+        const client = new Client(config);
+
+        // 构造请求参数
+        const request = new AppStatisticsInfoRequest({
+            appKey: 'kPUtUMDIjBhS48q5771pow',
+        });
+
+        // 发起请求
+        const response = await client.AppStatisticsInfo(request);
+
+        // 打印响应结果
+        console.log('\n应用统计信息响应:');
+        console.log(`code: ${response.code}`);
+        console.log(`msg: ${response.msg}`);
+        console.log('data:');
+        console.log(`  yesterdayDownloadCount: ${response.data.yesterdayDownloadCount}`);
+        console.log(`  totalDownloadCount: ${response.data.totalDownloadCount}`);
+        console.log(`  yesterdayAppGetStrategyCount: ${response.data.yesterdayAppGetStrategyCount}`);
+        console.log(`  totalAppGetStrategyCount: ${response.data.totalAppGetStrategyCount}`);
+        console.log(`  yesterdayAppUpgradeCount: ${response.data.yesterdayAppUpgradeCount}`);
+        console.log(`  totalAppUpgradeCount: ${response.data.totalAppUpgradeCount}`);
+        console.log(`  yesterdayAppStartCount: ${response.data.yesterdayAppStartCount}`);
+        console.log(`  totalAppStartCount: ${response.data.totalAppStartCount}`);
+        console.log(`  downloadCount7Day: ${response.data.downloadCount7Day}`);
+        console.log(`  appGetStrategyCount7Day: ${response.data.appGetStrategyCount7Day}`);
+        console.log(`  appUpgradeCount7Day: ${response.data.appUpgradeCount7Day}`);
+        console.log(`  appStartCount7Day: ${response.data.appStartCount7Day}`);
+    } catch (error) {
+        console.error('\n获取应用统计信息失败:', error);
+    }
+}
+
+
 // 执行测试
 testGetUrlUpgrade();
 testGetUrlVersion();
@@ -270,3 +314,4 @@ testGetTauriVersion();
 testGetConfigurationUpgrade();
 testGetFileUpgrade();
 testPostAppReport();
+testGetAppStatisticsInfo();

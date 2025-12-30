@@ -1,6 +1,6 @@
 {
   "name": "@toolsetlink/upgradelink-api-typescript",
-  "version": "2.2.0",
+  "version": "2.4.1",
   "description": "upgradelink-api-typescript",
   "private": false,
   "main": "dist/client.js",
@@ -25,7 +25,7 @@
     "@alicloud/tea-typescript": "^1.7.1",
     "@alicloud/tea-util": "^1.4.9",
     "@toolsetlink/darabonba-base-typescript": "^1.0.0",
-    "@toolsetlink/upgradelink-api-typescript": "^2.1.0"
+    "@toolsetlink/upgradelink-api-typescript": "^2.4.1"
   },
   "files": [
     "dist",
